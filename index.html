@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Joining Roblox</title>
+  <script>
+    window.onload = function () {
+      const params = new URLSearchParams(window.location.search);
+      const path = window.location.pathname.replace(/\/$/, "");
+
+      if (path === "/joinid") {
+        const placeId = params.get("placeId");
+        const gameInstanceId = params.get("gameInstanceId");
+
+        if (placeId && gameInstanceId) {
+          window.location.href =
+            `roblox://placeID=${encodeURIComponent(placeId)}&gameInstanceId=${encodeURIComponent(gameInstanceId)}`;
+        } else {
+          document.body.textContent =
+            "Error: Missing Place ID or Game Instance ID.";
+        }
+
+      } else if (path === "/joinfromps") {
+        const link = params.get("link");
+
+        if (!link) {
+          document.body.textContent =
+            "Error: Missing private server link.";
+          return;
+        }
+
+        try {
+          const url = new URL(link);
+
+          if (!["roblox.com", "www.roblox.com"].includes(url.hostname)) {
+            throw new Error("Invalid domain");
+          }
+
+          const code = url.searchParams.get("code");
+          const type = url.searchParams.get("type");
+
+          if (url.pathname === "/share" && code && type === "Server") {
+            window.location.href =
+              `roblox://navigation/share_links?code=${encodeURIComponent(code)}&type=Server`;
+          } else {
+            document.body.textContent =
+              "Error: Invalid private server link.";
+          }
+        } catch (e) {
+          document.body.textContent =
+            "Error: Invalid private server URL.";
+        }
+
+      } else {
+        document.body.textContent = "Error: Unknown route.";
+      }
+    };
+  </script>
+</head>
+<body>Joining Roblox...</body>
+</html>
